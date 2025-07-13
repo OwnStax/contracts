@@ -35,6 +35,23 @@ contract ContentStorage {
         socialMediaList.push(msg.sender);
     }
 
+    function unregisterSocialMedia() public {
+        if (!isSocialMediaRegistered()) {
+            revert socialMediaNotRegistered(msg.sender);
+        }
+        registeredSocialMedias[msg.sender] = false;
+        
+        // Remove from socialMediaList
+        for (uint i = 0; i < socialMediaList.length; i++) {
+            if (socialMediaList[i] == msg.sender) {
+                // Replace with last element and pop
+                socialMediaList[i] = socialMediaList[socialMediaList.length - 1];
+                socialMediaList.pop();
+                break;
+            }
+        }
+    }
+
     function isSocialMediaRegistered() public view returns (bool) {
         return registeredSocialMedias[msg.sender];
     }
@@ -45,4 +62,5 @@ contract ContentStorage {
 
     error contentExists(address user, string content);
     error socialMediaAlreadyRegistered(address socialMedia);
+    error socialMediaNotRegistered(address socialMedia);
 }

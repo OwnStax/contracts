@@ -72,4 +72,53 @@ contract ContentStorageTest is Test {
         vm.expectRevert(abi.encodeWithSelector(ContentStorage.socialMediaAlreadyRegistered.selector, socialMedia));
         contentStorage.registerSocialMedia();
     }
+
+    function test_UnregisterSocialMedia() public {
+        address socialMedia = address(0x1234567890123456789012345678901234567890);
+        
+        // Register first
+        vm.prank(socialMedia);
+        contentStorage.registerSocialMedia();
+        
+        vm.prank(socialMedia);
+        assertTrue(contentStorage.isSocialMediaRegistered());
+        
+        // Unregister
+        vm.prank(socialMedia);
+        contentStorage.unregisterSocialMedia();
+        
+        vm.prank(socialMedia);
+        assertFalse(contentStorage.isSocialMediaRegistered());
+    }
+
+    function test_UnregisterSocialMediaUpdatesList() public {
+        address socialMedia1 = address(0x1234567890123456789012345678901234567890);
+        address socialMedia2 = address(0x0987654321098765432109876543210987654321);
+        
+        // Register both
+        vm.prank(socialMedia1);
+        contentStorage.registerSocialMedia();
+        
+        vm.prank(socialMedia2);
+        contentStorage.registerSocialMedia();
+        
+        address[] memory registered = contentStorage.getRegisteredSocialMedias();
+        assertEq(registered.length, 2);
+        
+        // Unregister first one
+        vm.prank(socialMedia1);
+        contentStorage.unregisterSocialMedia();
+        
+        registered = contentStorage.getRegisteredSocialMedias();
+        assertEq(registered.length, 1);
+        assertEq(registered[0], socialMedia2);
+    }
+
+    function test_RevertUnregisterNotRegisteredSocialMedia() public {
+        address unregisteredSocialMedia = address(0x1111111111111111111111111111111111111111);
+        
+        vm.prank(unregisteredSocialMedia);
+        vm.expectRevert(abi.encodeWithSelector(ContentStorage.socialMediaNotRegistered.selector, unregisteredSocialMedia));
+        contentStorage.unregisterSocialMedia();
+    }
 }
