@@ -2,18 +2,16 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {Counter} from "../src/Counter.sol";
+import {ContentStorage} from "../src/ContentStorage.sol";
 
-contract CounterScript is Script {
-    Counter public counter;
+contract ContentStorageScript is Script {
+    ContentStorage public contentStorage;
 
     function setUp() public {}
 
     function run() public {
         vm.startBroadcast();
-
-        counter = new Counter();
-
+        contentStorage = new ContentStorage();
         vm.stopBroadcast();
     }
 }
