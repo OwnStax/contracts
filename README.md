@@ -1,66 +1,36 @@
-## Foundry
+# Content Storage Contract
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A simple smart contract for storing user content on Ethereum.
 
-Foundry consists of:
+## Quick Start
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+### 1. Install Dependencies
+```bash
+forge install
 ```
 
-### Test
-
-```shell
-$ forge test
+### 2. Start Local Blockchain
+```bash
+anvil
 ```
 
-### Format
-
-```shell
-$ forge fmt
+### 3. Deploy Contract
+```bash
+source .env && forge script script/ContentStorage.sol:ContentStorageScript --rpc-url http://localhost:8545 --private-key $PRIVATE_KEY --broadcast
 ```
 
-### Gas Snapshots
+### 4. Frontend Integration
 
-```shell
-$ forge snapshot
-```
+Use the deployed contract address and connect to `http://localhost:8545` in your frontend.
 
-### Anvil
+**Contract ABI**: Located at `out/ContentStorage.sol/ContentStorage.json`
 
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+**Example Frontend Connection**:
+```javascript
+// Using ethers.js
+const contract = new ethers.Contract(
+  "DEPLOYED_CONTRACT_ADDRESS",
+  contractABI,
+  provider
+);
 ```
