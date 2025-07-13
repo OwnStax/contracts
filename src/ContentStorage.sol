@@ -4,6 +4,8 @@ pragma solidity ^0.8.13;
 contract ContentStorage {
     mapping(address => string[]) private contentsOfUser;
     mapping(address => mapping(bytes32 => bool)) private userContentHashes;
+    mapping(address => bool) private registeredSocialMedias;
+    address[] private socialMediaList;
 
     function addContent(string memory content) public {
         bytes32 contentHash = keccak256(abi.encodePacked(content));
@@ -25,5 +27,22 @@ contract ContentStorage {
         return userContentHashes[user][contentHash];
     }
 
+    function registerSocialMedia() public {
+        if (isSocialMediaRegistered()) {
+            revert socialMediaAlreadyRegistered(msg.sender);
+        }
+        registeredSocialMedias[msg.sender] = true;
+        socialMediaList.push(msg.sender);
+    }
+
+    function isSocialMediaRegistered() public view returns (bool) {
+        return registeredSocialMedias[msg.sender];
+    }
+
+    function getRegisteredSocialMedias() public view returns (address[] memory) {
+        return socialMediaList;
+    }
+
     error contentExists(address user, string content);
+    error socialMediaAlreadyRegistered(address socialMedia);
 }
